@@ -64,18 +64,26 @@ app_coletabio/
 
 ## Telas
 
-**Home**
-<img width="373" height="663" alt="image" src="https://github.com/user-attachments/assets/a8c75ab3-ce78-4bfe-ba84-fc42d587e5ee" />
-
-**Espécies**
-<img width="375" alt="Tela de espécies" src="https://github.com/user-attachments/assets/98bb3735-ff80-418d-9a12-89b1954b271b" />
-
-**Coleta**
-<img width="374" height="665" alt="image" src="https://github.com/user-attachments/assets/b41c97e2-5ccf-4378-af2e-93417b0f9024" />
-
-**Indicadores**
-<img width="377" height="670" alt="image" src="https://github.com/user-attachments/assets/995743ff-6ec0-4cc3-92bf-73afee45c8a0" />
-
-**Relatórios**
-<img width="370" height="662" alt="image" src="https://github.com/user-attachments/assets/60b76fd6-1069-4963-9a49-4f8917a33115" />
+<table>
+  <tr>
+    <td align="center"><b>Home</b></td>
+    <td align="center"><b>Espécies</b></td>
+    <td align="center"><b>Coleta</b></td>
+  </tr>
+  <tr>
+    <td><img width="250" src="https://github.com/user-attachments/assets/a8c75ab3-ce78-4bfe-ba84-fc42d587e5ee" /></td>
+    <td><img width="250" src="https://github.com/user-attachments/assets/98bb3735-ff80-418d-9a12-89b1954b271b" /></td>
+    <td><img width="250" src="https://github.com/user-attachments/assets/b41c97e2-5ccf-4378-af2e-93417b0f9024" /></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Indicadores</b></td>
+    <td align="center"><b>Relatórios</b></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><img width="250" src="https://github.com/user-attachments/assets/995743ff-6ec0-4cc3-92bf-73afee45c8a0" /></td>
+    <td><img width="250" src="https://github.com/user-attachments/assets/60b76fd6-1069-4963-9a49-4f8917a33115" /></td>
+    <td></td>
+  </tr>
+</table>
 
