@@ -1,4 +1,5 @@
 import flet as ft
+import flet_charts as ftc
 from assets.models import fb_model
 #import fb_model
 
@@ -16,8 +17,6 @@ def get_collects_dates():
         return dp_with_dates
     except Exception as e:
         return dp_with_dates
-
-get_collects_dates()
 
 def create_chart(date_of_collect):
     aroeiras = []
@@ -43,123 +42,86 @@ def create_chart(date_of_collect):
                             externas.append(float(data_info['coletas'][info][date][collect]))
                     break
 
-        average = [
-            sum(aroeiras)/len(aroeiras),
-            sum(angicos)/len(angicos),
-            sum(juremas)/len(juremas),
-            sum(marmeleiros)/len(marmeleiros),
-            sum(externas)/len(externas)
-            ]
-        
-        chart = ft.BarChart(
-            bar_groups=[
-                ft.BarChartGroup(
-                    x=0,
-                    bar_rods=[
-                        ft.BarChartRod(
+        species = [
+            ('Aroeiras', aroeiras, '#B2E2F2'),
+            ('Angicos', angicos, '#B0C2F2'),
+            ('Juremas', juremas, '#CAACF9'),
+            ('Marmeleiros', marmeleiros, '#FABFB7'),
+            ('Areas Externas', externas, '#FFDA9E'),
+        ]
+        averages = [sum(values)/len(values) if values else 0 for _, values, _ in species]
+
+        groups = []
+        labels = []
+        for i, ((name, _, color), avg) in enumerate(zip(species, averages)):
+            groups.append(
+                ftc.BarChartGroup(
+                    x=i,
+                    rods=[
+                        ftc.BarChartRod(
                             width=40,
-                            tooltip=round(sum(aroeiras)/len(aroeiras),2),
+                            tooltip=ftc.BarChartRodTooltip(
+                                text=str(round(avg, 2)),
+                                text_style=ft.TextStyle(color=ft.Colors.WHITE, weight=ft.FontWeight.BOLD),
+                            ),
                             from_y=0,
-                            to_y=sum(aroeiras)/len(aroeiras),
-                            color='#B2E2F2',
-                            border_radius=0
-                        ),
-                    ]
-                ),
-                ft.BarChartGroup(
-                    x=1,
-                    bar_rods=[
-                        ft.BarChartRod(
-                            width=40,
-                            tooltip=round(sum(angicos)/len(angicos),2),
-                            from_y=0,
-                            to_y=sum(angicos)/len(angicos),
-                            color='#B0C2F2',
-                            border_radius=0
-                        ),
-                    ]
-                ),
-                ft.BarChartGroup(
-                    x=2,
-                    bar_rods=[
-                        ft.BarChartRod(
-                            width=40,
-                            tooltip=round(sum(juremas)/len(juremas),2),
-                            from_y=0,
-                            to_y=sum(juremas)/len(juremas),
-                            color='#CAACF9',
-                            border_radius=0
-                        ),
-                    ]
-                ),
-                ft.BarChartGroup(
-                    x=3,
-                    bar_rods=[
-                        ft.BarChartRod(
-                            width=40,
-                            tooltip=round(sum(marmeleiros)/len(marmeleiros),2),
-                            from_y=0,
-                            to_y=sum(marmeleiros)/len(marmeleiros),
-                            color='#FABFB7',
-                            border_radius=0
-                        ),
-                    ]
-                ),
-                ft.BarChartGroup(
-                    x=4,
-                    bar_rods=[
-                        ft.BarChartRod(
-                            width=40,
-                            tooltip=round(sum(externas)/len(externas),2),
-                            from_y=0,
-                            to_y=sum(externas)/len(externas),
-                            color='#FFDA9E',
-                            border_radius=0
+                            to_y=avg,
+                            color=color,
+                            border_radius=0,
                         ),
                     ],
                 )
+            )
+            labels.append(
+                ftc.ChartAxisLabel(
+                    value=i,
+                    label=ft.Container(
+                        content=ft.Text(name, size=12),
+                        rotate=ft.Rotate(-0.6, alignment=ft.Alignment.CENTER),
+                        padding=ft.Padding.only(top=20),
+                    ),
+                )
+            )
 
-            ],
-            groups_space=1,
-            border=ft.border.all(1,ft.colors.GREY_400),
-            left_axis=ft.ChartAxis(
-                labels_size=10, title=ft.Text("Volume (Média em ml)"), title_size=20
+        max_value = max(averages) + 50
+        y_step = max(round(max_value / 5), 1)
+        y_labels = [
+            ftc.ChartAxisLabel(value=i * y_step, label=ft.Text(str(i * y_step), size=11))
+            for i in range(6)
+        ]
+
+        chart = ftc.BarChart(
+            groups=groups,
+            tooltip=ftc.BarChartTooltip(
+                bgcolor=ft.Colors.BLACK87,
+                border_radius=6,
+                padding=8,
             ),
-            
-            bottom_axis=ft.ChartAxis(
-                labels=[
-                    ft.ChartAxisLabel(
-                        value=0, label=ft.Text("Aroeiras")   
-                    ),
-                    ft.ChartAxisLabel(
-                        value=1, label=ft.Text("Angicos")
-                    ),
-                    ft.ChartAxisLabel(
-                        value=2, label=ft.Text("Juremas")
-                    ),
-                    ft.ChartAxisLabel(
-                        value=3, label=ft.Text("Marmeleiros")
-                    ),
-                    ft.ChartAxisLabel(
-                        value=4, label=ft.Text("Areas Externas")
-                    ),
-                ],
-                labels_size=15,
-                labels_interval=20
+            group_spacing=24,
+            border=ft.Border.all(1, ft.Colors.GREY_400),
+            left_axis=ftc.ChartAxis(
+                title=ft.Text("Volume (Média em ml)"),
+                title_size=20,
+                label_size=40,
+                labels=y_labels,
+                show_min=False,
+                show_max=False,
             ),
-            horizontal_grid_lines=ft.ChartGridLines(
-                color=ft.colors.GREY_300, width=1, dash_pattern=[3, 3]
+            bottom_axis=ftc.ChartAxis(
+                labels=labels,
+                label_size=50,
             ),
-            tooltip_bgcolor=ft.colors.with_opacity(0.5, ft.colors.GREY_300),
-            max_y=max(average)+50,
+            horizontal_grid_lines=ftc.ChartGridLines(
+                color=ft.Colors.GREY_300, width=1, dash_pattern=[3, 3]
+            ),
+            max_y=max_value,
             interactive=True,
-            expand=False,
-            
-            
+            height=400,
         )
         return chart
     except Exception as e:
-        print(e)
+        print(f'create_chart error: {e}')
+        return ft.Text(f'Erro ao gerar gráfico: {e}')
 
 # def main(page:ft.Page):
 #     g = create_chart('12-04-2024')

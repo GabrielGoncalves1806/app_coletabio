@@ -6,9 +6,13 @@ from assets.widgets import widgets
 # Função que renderiza a tela Home
 def main(page:ft.Page):
     page.route = '/'
-    # Definiçãoes da pagina
-    page.window_width = 500
-    page.window_height = 650
+    # iPhone SE viewport
+    page.window.width = 375
+    page.window.height = 667
+    page.window.min_width = 320
+    page.window.min_height = 568
+    page.window.resizable = True
+    page.padding = 10
     page.vertical_alignment = ft.CrossAxisAlignment.CENTER
     page.title = "Coleta BIO"
     #page.window_full_screen = True
@@ -38,23 +42,18 @@ def main(page:ft.Page):
         
 
     def save_collect():
-        page.snack_bar = ft.SnackBar(content=ft.Text(""))
         try:
             response = plants_model.save_data_on_cloud()
             print(response)
             if response == True:
-                page.snack_bar.content = ft.Text('Coleta salva com sucesso!')
-                page.snack_bar.open = True
-                page.update()
+                page.open(ft.SnackBar(content=ft.Text('Coleta salva com sucesso!')))
             else:
-                page.snack_bar.content = ft.Text(f'Erro ao salvar coleta - status {response}')
-                page.snack_bar.open = True
-                page.update()
+                page.open(ft.SnackBar(content=ft.Text(f'Erro ao salvar coleta - status {response}')))
         except Exception as e:
             pass
         set_save_button()
 
-    save_button = ft.ElevatedButton('Save on cloud',icon='cloud_upload',on_click=lambda _: save_collect())
+    save_button = ft.ElevatedButton('Save on cloud', icon=ft.Icons.CLOUD_UPLOAD, on_click=lambda _: save_collect())
 
     def set_save_button():
         disable = plants_model.verify_temporary_data()

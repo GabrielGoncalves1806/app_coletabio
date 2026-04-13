@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"from assets.models import indicators_model; c = indicators_model.create_chart\\('16-06-2024'\\); print\\(type\\(c\\).__name__\\)\")"
+    ]
+  }
+}

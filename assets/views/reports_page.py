@@ -1,49 +1,37 @@
 import flet as ft
 from assets.models import reports_model
 
+
 def main(page: ft.Page):
     page.route = '/reports'
-    page.scroll = True
 
     def go_home(e):
         page.views.pop()
-        top_view = page.views[-1]
-        page.go(top_view.route)
+        page.update()
+
+    body_column, reports_count = reports_model.get_reports_list()
 
     def sort(e):
-        page_body.controls.reverse()
-        page.update()
-    
-    page_body, reports_count = reports_model.get_reports_list()
+        if isinstance(body_column, ft.Column):
+            body_column.controls.reverse()
+            page.update()
 
     page.views.append(
-        ft.View(route='/plants',
+        ft.View(
+            route='/reports',
             controls=[
-                # Header
-                ft.Column(
-                    [
-                        ft.Row([ft.Text('')]),
-                        ft.Row([ft.IconButton(ft.icons.ARROW_BACK,on_click=go_home),ft.Text('Relatórios',font_family='Bold',size=25)]),
-                        ft.Row([ft.Text(f'Encontrados: {reports_count}'),ft.IconButton(ft.icons.SORT,on_click=sort)])
-                    ]
-                ),
-                # Body
-                ft.Column(
-                    [
-                        page_body,
-                    ],
-                    scroll=True
-                ),
-                # Footer
-                ft.Column(
-                    [
-                        ft.ElevatedButton('Voltar', on_click=go_home)
-                    ]
-                ),
+                ft.Row([
+                    ft.IconButton(ft.Icons.ARROW_BACK, on_click=go_home),
+                    ft.Text('Relatórios', size=25, weight=ft.FontWeight.BOLD),
+                ]),
+                ft.Row([
+                    ft.Text(f'Encontrados: {reports_count}'),
+                    ft.IconButton(ft.Icons.SORT, on_click=sort),
+                ]),
+                ft.Container(content=body_column, expand=True),
+                ft.ElevatedButton('Voltar', on_click=go_home),
             ],
-            scroll=True
+            scroll=ft.ScrollMode.AUTO,
         )
     )
-    #show_reports()
-    
     page.update()

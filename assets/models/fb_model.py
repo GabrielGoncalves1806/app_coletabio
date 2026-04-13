@@ -1,6 +1,6 @@
 import requests
 import json
-from config import DATABASE_URL
+from ..config import DATABASE_URL
 
 
 # Função que pega as coletas direto do firebase

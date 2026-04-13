@@ -32,29 +32,38 @@ import flet as ft
 # Função que gera a lista de relatório
 
 def get_reports_list():
+    report_list = ft.Column(scroll=ft.ScrollMode.AUTO, expand=True)
+    reports_count = 0
     try:
         reports_data = fb_model.get_cloud_data()
-        report_list = ft.Column(scroll=True)
-        reports_count = 0
-        
-        
-        for collects in reversed(reports_data['coletas']):
+        if not reports_data or 'coletas' not in reports_data:
+            report_list.controls.append(
+                ft.Text('Sem acesso a internet ou nenhuma coleta encontrada.')
+            )
+            return report_list, 0
+
+        for collects in reversed(list(reports_data['coletas'])):
             for date in reports_data['coletas'][collects]:
-                exp = ft.ExpansionTile(title=ft.Text(date), leading=ft.Icon(ft.icons.CALENDAR_MONTH))
-                report_list.controls.append(exp)
-                reports_count += 1
+                children = []
                 for plant in reports_data['coletas'][collects][date]:
-                    exp.controls.append(
-                        
+                    children.append(
                         ft.ListTile(
-                            title=ft.Text(f"{plant}:      {reports_data['coletas'][collects][date][plant]} ml"),
-                            leading=ft.Icon(ft.icons.FOREST),
-                            
+                            title=ft.Text(f"{plant}: {reports_data['coletas'][collects][date][plant]} ml"),
+                            leading=ft.Icon(ft.Icons.FOREST),
                         )
                     )
-                    
-
+                report_list.controls.append(
+                    ft.ExpansionTile(
+                        title=ft.Text(date),
+                        leading=ft.Icon(ft.Icons.CALENDAR_MONTH),
+                        controls=children,
+                    )
+                )
+                reports_count += 1
         return report_list, reports_count
-            
+
     except Exception as e:
-        return ft.Text('Sem acesso a internet, verifique a conexão e tente novamente'),0
+        report_list.controls.append(
+            ft.Text(f'Erro ao carregar relatórios: {e}')
+        )
+        return report_list, 0

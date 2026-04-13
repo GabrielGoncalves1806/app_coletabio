@@ -3,14 +3,13 @@ import flet as ft
 def navigation_bar():
     navigation_bar = ft.CupertinoNavigationBar(
         destinations=[
-            #ft.NavigationDestination(label='Inicio',icon='HOME'),
-            ft.NavigationDestination(label='Coleta',icon='ADD'),
-            ft.NavigationDestination(label='Relatórios',icon='FORMAT_LIST_BULLETED'),
-            ft.NavigationDestination(label='Indicadores',icon='BAR_CHART'),
-            ft.NavigationDestination(label='Especies',icon='FOREST_OUTLINED',selected_icon='FOREST')
+            ft.NavigationBarDestination(label='Coleta', icon=ft.Icons.ADD),
+            ft.NavigationBarDestination(label='Relatórios', icon=ft.Icons.FORMAT_LIST_BULLETED),
+            ft.NavigationBarDestination(label='Indicadores', icon=ft.Icons.BAR_CHART),
+            ft.NavigationBarDestination(label='Especies', icon=ft.Icons.FOREST_OUTLINED, selected_icon=ft.Icons.FOREST),
         ],
     )
-    
+
     return navigation_bar
 
 def app_bar():
@@ -18,7 +17,7 @@ def app_bar():
         actions=[
             ft.PopupMenuButton(
                 items=[
-                    ft.PopupMenuItem(text='Configurações',icon=ft.icons.SETTINGS_OUTLINED)
+                    ft.PopupMenuItem(content=ft.Text('Configurações')),
                 ],
             )
         ]

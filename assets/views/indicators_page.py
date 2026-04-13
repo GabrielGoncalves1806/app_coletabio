@@ -1,52 +1,47 @@
 import flet as ft
 from assets.models import indicators_model
 
-def main(page:ft.Page):
 
-    
-    collect_dates = indicators_model.get_collects_dates()
-    graphic = ft.BarChart()
+def main(page: ft.Page):
     page.route = '/indicators'
-    
+
     def go_home(e):
         page.views.pop()
-        top_view = page.views[-1]
-        page.go(top_view.route)
-    
-    def collect_date_chart(dp_date):
-        indicators.controls.pop(1)
-        graphic = indicators_model.create_chart(dp_date)
-        indicators.controls.insert(1,graphic)
         page.update()
 
-    indicators = ft.View(
+    date_dropdown = indicators_model.get_collects_dates()
+    chart_container = ft.Container(
+        content=ft.Text('Selecione uma data acima para exibir o gráfico.'),
+        padding=10,
+        expand=True,
+    )
+
+    def on_date_change(e):
+        selected = date_dropdown.value
+        if not selected:
+            return
+        print(f'[indicators] data selecionada: {selected}')
+        chart = indicators_model.create_chart(selected)
+        if chart is None:
+            chart = ft.Text(f'Sem dados para {selected}.')
+        chart_container.content = chart
+        page.update()
+
+    date_dropdown.on_select = on_date_change
+
+    page.views.append(
+        ft.View(
             route='/indicators',
             controls=[
-                # Header
-                ft.Column(
-                    [
-                        ft.Row([ft.Text('')]),
-                        ft.Row([ft.IconButton(icon=ft.icons.ARROW_BACK, on_click=go_home),ft.Text(f'Coletas',size=25)]),
-                        collect_dates,
-                        ft.Row([ft.Text(' ')])
-                    ],
-                ),
-                # Body
-                ft.Column(
-                    [
-
-                    ],
-                    
-                ),
-
-                # Footer
-                ft.Column(
-                    [
-                        ft.ElevatedButton('Voltar',on_click=go_home)
-                    ]
-                )
-            ]
+                ft.Row([
+                    ft.IconButton(icon=ft.Icons.ARROW_BACK, on_click=go_home),
+                    ft.Text('Coletas', size=25),
+                ]),
+                date_dropdown,
+                chart_container,
+                ft.ElevatedButton('Voltar', on_click=go_home),
+            ],
+            scroll=ft.ScrollMode.AUTO,
         )
-    page.views.append(indicators)
-    collect_dates.on_change = lambda _: collect_date_chart(collect_dates.value)
+    )
     page.update()
